@@ -105,6 +105,35 @@ impl Cpu1Bit {
                 println!("[PC: {}] CLR -> RR a fost resetat la false", self.pc);
                 self.pc += 1;
             }
+            0b1011 => {
+                // NOP (No Operation) - Doar avansează PC-ul, nu face nimic altceva
+                println!("[PC: {}] NOP -> Fără operație", self.pc);
+                self.pc += 1;
+            }
+            0b1100 => {
+                // NAND addr (Not-AND: negația lui AND)
+                self.rr = !(self.rr && self.ram[addr]);
+                println!("[PC: {}] NAND cu RAM[{}] -> RR devine {}", self.pc, addr, self.rr);
+                self.pc += 1;
+            }
+            0b1101 => {
+                // NOR addr (Not-OR: negația lui OR)
+                self.rr = !(self.rr || self.ram[addr]);
+                println!("[PC: {}] NOR cu RAM[{}] -> RR devine {}", self.pc, addr, self.rr);
+                self.pc += 1;
+            }
+            0b1110 => {
+                // SET1 (Setează RR direct pe true)
+                self.rr = true;
+                println!("[PC: {}] SET1 -> RR a fost setat la true (1)", self.pc);
+                self.pc += 1;
+            }
+            0b1111 => {
+                // SET0 (Setează RR direct pe false)
+                self.rr = false;
+                println!("[PC: {}] SET0 -> RR a fost setat la false (0)", self.pc);
+                self.pc += 1;
+            }
             _ => {
                 println!("[CPU] Erore: Opcode binar necunoscut {:#010b}", opcode);
                 self.halted = true;
